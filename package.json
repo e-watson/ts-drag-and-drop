@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "lite-server"
+    "start": "./node_modules/.bin/tsc && lite-server"
   },
   "keywords": [
     "typescript",
@@ -15,6 +15,7 @@
   "author": "Maximilian Schwarzmüller & Eduard Skripchenko",
   "license": "ISC",
   "devDependencies": {
-    "lite-server": "^2.5.4"
+    "lite-server": "^2.5.4",
+    "typescript": "^3.8.3"
   }
 }
