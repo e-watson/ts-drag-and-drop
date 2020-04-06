@@ -28,7 +28,7 @@ class ProjectState {
         if (this.instance) {
             return this.instance;
         }
-        this.instance = new ProjectState;
+        this.instance = new ProjectState();
         return this.instance;
     }
     addListener(listenerFn) {
@@ -75,7 +75,7 @@ function autobind(_target, _methodName, descriptor) {
         get() {
             const boundFn = originalMethod.bind(this);
             return boundFn;
-        }
+        },
     };
     return adjDescriptor;
 }
@@ -89,7 +89,13 @@ class ProjectList {
         this.element = importedNode.firstElementChild;
         this.element.id = `${this.type}-projects`;
         projectState.addListener((projects) => {
-            this.assignedProjects = projects;
+            const relevantProjects = projects.filter((p) => {
+                if (this.type === "active") {
+                    return p.status === ProjectStatus.Active;
+                }
+                return p.status === ProjectStatus.Finished;
+            });
+            this.assignedProjects = relevantProjects;
             this.renderProjects();
         });
         this.attach();
@@ -98,15 +104,16 @@ class ProjectList {
     renderProjects() {
         const listEl = document.getElementById(`${this.type}-projects-list`);
         for (const prjItem of this.assignedProjects) {
-            const listItem = document.createElement('li');
+            const listItem = document.createElement("li");
             listItem.textContent = prjItem.title;
             listEl.appendChild(listItem);
         }
     }
     renderContent() {
         const listId = `${this.type}-projects-list`;
-        this.element.querySelector('ul').id = listId;
-        this.element.querySelector('h2').textContent = this.type.toUpperCase() + ' PROJECTS';
+        this.element.querySelector("ul").id = listId;
+        this.element.querySelector("h2").textContent =
+            this.type.toUpperCase() + " PROJECTS";
     }
     attach() {
         this.hostElement.insertAdjacentElement("beforeend", this.element);
@@ -131,18 +138,18 @@ class ProjectInput {
         const enteredPeople = this.peopleInputElement.value;
         const titleValidatable = {
             value: enteredTitle,
-            required: true
+            required: true,
         };
         const descriptionValidatable = {
             value: enteredDescription,
             required: true,
-            minLength: 5
+            minLength: 5,
         };
         const peopleValidatable = {
             value: +enteredPeople,
             required: true,
             min: 1,
-            max: 5
+            max: 5,
         };
         if (!validate(titleValidatable) ||
             !validate(descriptionValidatable) ||
@@ -179,6 +186,6 @@ __decorate([
     autobind
 ], ProjectInput.prototype, "submitHandler", null);
 const prjInput = new ProjectInput();
-const activePrjList = new ProjectList('active');
-const finishedPrjList = new ProjectList('finished');
+const activePrjList = new ProjectList("active");
+const finishedPrjList = new ProjectList("finished");
 //# sourceMappingURL=app.js.map
